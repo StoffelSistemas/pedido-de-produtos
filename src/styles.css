@@ -1,1 +1,317 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  max-height: 100dvh;
+  max-width: 100dvw;
+  height: 100dvh;
+  width: 100dvw;
+}
+
+:root {
+  --sidebar-width: 280px;
+  --bs-primary: #0078bd;
+  --bs-primary-rgb: 0, 120, 189;
+  --app-bg: #f8fafc;
+  --sidebar-bg: #ffffff;
+  --sidebar-text: #111827;
+  --card-bg: #ffffff;
+  --card-border: #e5e7eb;
+  --input-bg: #f9fafb;
+  --input-border: #e5e7eb;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --hover-bg: #f3f4f6;
+  --footer-bg: #ffffff;
+  --btn-secondary-bg: #f3f4f6;
+}
+
+.dark-mode {
+  --app-bg: #0f172a;
+  --sidebar-bg: #1e293b;
+  --sidebar-text: #f1f5f9;
+  --card-bg: #1e293b;
+  --card-border: rgba(255, 255, 255, 0.08);
+  --input-bg: #1e293b;
+  --input-border: rgba(255, 255, 255, 0.08);
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --hover-bg: #2d3748;
+  --footer-bg: #1e293b;
+  --btn-secondary-bg: #2d3748;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  background-color: var(--app-bg);
+  color: var(--text-main);
+  overflow-x: hidden;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.btn {
+  border-radius: 50rem !important;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.875rem;
+}
+
+.btn-primary {
+  background-color: var(--bs-primary);
+  border: none;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: #0066a1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--bs-primary-rgb), 0.2);
+  color: #ffffff;
+}
+
+.btn-light {
+  background-color: var(--btn-secondary-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+}
+
+.btn-light:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--card-border);
+  color: var(--text-main);
+}
+
+.h-52 {
+  height: 52px !important;
+}
+
+.form-control,
+.form-select {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-main);
+  border-radius: 50rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding-left: 1.25rem;
+  height: 52px;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 4px rgba(var(--bs-primary-rgb), 0.1);
+  background-color: var(--input-bg);
+  color: var(--text-main);
+}
+
+.form-control::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
+  flex-shrink: 0;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--card-border);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  color: var(--sidebar-text);
+  transition: background-color 0.3s ease;
+  z-index: 1040;
+}
+
+.card {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--card-border) !important;
+  color: var(--text-main);
+  border-radius: 24px;
+  transition: all 0.3s ease;
+}
+
+.bg-white-card {
+  background-color: var(--card-bg) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--card-border) !important;
+  border-radius: 32px;
+}
+
+/* Fix para accordions e listas no dark mode */
+.list-group {
+  background-color: transparent !important;
+}
+.list-group-item {
+  background-color: transparent !important;
+  border-color: var(--card-border) !important;
+  color: var(--text-main) !important;
+}
+
+.bg-light {
+  background-color: var(--hover-bg) !important;
+  color: var(--text-main) !important;
+}
+.text-muted {
+  color: var(--text-muted) !important;
+}
+.text-dark {
+  color: var(--text-main) !important;
+}
+
+.filter-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  display: block;
+  margin-left: 1rem;
+}
+
+.section-title-small {
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 24px;
+}
+
+footer.fixed-bottom {
+  background-color: var(--footer-bg) !important;
+  border-top: 1px solid var(--card-border) !important;
+  transition: all 0.3s ease;
+  left: var(--sidebar-width) !important;
+  width: calc(100% - var(--sidebar-width)) !important;
+}
+
+.flatpickr-calendar {
+  background: var(--card-bg) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid var(--card-border) !important;
+}
+.flatpickr-day {
+  color: var(--text-main) !important;
+}
+.flatpickr-day.selected {
+  background: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+}
+.flatpickr-current-month,
+.flatpickr-month,
+.flatpickr-weekday {
+  color: var(--text-main) !important;
+  fill: var(--text-main) !important;
+}
+
+.sidebar .nav-link {
+  border-radius: 12px;
+  margin-bottom: 4px;
+  color: var(--text-muted) !important;
+  border: none;
+  background: transparent;
+  text-align: left;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0.875rem 1.25rem;
+}
+.sidebar .nav-link:hover {
+  background-color: var(--hover-bg) !important;
+  color: var(--text-main) !important;
+}
+.sidebar .nav-link.active-link {
+  background-color: var(--bs-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(var(--bs-primary-rgb), 0.2);
+}
+
+.modal-content {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--card-border) !important;
+  color: var(--text-main);
+  border-radius: 24px;
+  transition: all 0.3s ease;
+}
+
+/* Utility classes para animação de accordions */
+.rotate-180 {
+  transform: rotate(180deg);
+}
+.transition-transform {
+  transition: transform 0.3s ease;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Notification */
+/* styles.scss / styles.css */
+
+/* Snackbar de Sucesso (Verde) */
+.snackbar-success {
+  --mdc-snackbar-container-color: #2e7d32; /* Verde Material */
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mdc-snackbar-supporting-text-weight: 500;
+}
+
+.snackbar-success .mat-mdc-button {
+  color: #ffffff;
+}
+
+/* Snackbar de Erro (Vermelho) */
+.snackbar-error {
+  --mdc-snackbar-container-color: #d32f2f; /* Vermelho Material */
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mdc-snackbar-supporting-text-weight: 500;
+}
+
+.snackbar-error .mat-mdc-button {
+  color: #ffffff;
+}
+
+/* DIALOG */
+/* --- Estilização do Angular Material Dialog --- */
+
+/* Aplica o fundo, borda e raio ao contêiner do dialog */
+.mat-mdc-dialog-surface {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--card-border) !important;
+  color: var(--text-main) !important;
+  border-radius: 24px !important; /* Seguindo o padrão dos seus cards */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Garante que o texto interno (mat-dialog-content) respeite a cor do tema */
+.mat-mdc-dialog-content {
+  color: var(--text-main) !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+/* Espaçamento das ações (botões) */
+.mat-mdc-dialog-actions {
+  gap: 12px;
+  padding: 16px 24px !important;
+}

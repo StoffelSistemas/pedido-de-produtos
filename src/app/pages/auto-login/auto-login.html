@@ -1,0 +1,20 @@
+<div class="d-flex w-100 h-100 justify-content-center align-items-center gap-3">
+  @if (status() == 'autenticando') {
+    <div class="spinner-border text-secondary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <h3 class="mb-0">Autenticando...</h3>
+  } @else if (status() == 'autenticado') {
+    <i class="ph ph-check-circle text-success fs-1"></i>
+    <h3 class="mb-0 text-success">Autenticado</h3>
+  } @else if (status() == 'error') {
+    <i class="ph ph-x-circle text-danger fs-1"></i>
+    <h3 class="mb-0 text-danger">Erro ao autenticar!</h3>
+  } @else if (status() == 'missing') {
+    <i class="ph ph-x-circle text-danger fs-1"></i>
+    <h3 class="mb-0 text-danger">O doc ou a franquia não estão sendo definidos!</h3>
+  } @else if (status() == 'franquiaNotValid') {
+    <i class="ph ph-x-circle text-danger fs-1"></i>
+    <h3 class="mb-0 text-danger">Franquia inexistente!</h3>
+  }
+</div>

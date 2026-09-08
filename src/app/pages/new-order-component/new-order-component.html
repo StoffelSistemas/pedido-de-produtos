@@ -1,0 +1,205 @@
+<div class="container-fluid p-0">
+  <header
+    class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4"
+  >
+    <div>
+      <h1 class="h2 fw-black mb-1">Realizar Novo Pedido</h1>
+      <p class="text-muted small fw-medium">Selecione os produtos para seu pedido</p>
+    </div>
+    <button
+      (click)="handleBackToOrders()"
+      class="btn btn-light px-4 py-3 h-52 border fw-bold d-flex align-items-center gap-2"
+    >
+      <span class="material-icons-outlined">arrow_back</span>
+      VOLTAR AO HISTÓRICO
+    </button>
+  </header>
+
+  <!-- Filters -->
+  <section class="bg-white-card px-3 px-md-4 py-4 shadow-sm mb-4">
+    <h6
+      class="section-title-small mb-3 text-uppercase text-muted fw-bold"
+      style="font-size: 10px; letter-spacing: 0.5px"
+    >
+      Filtros Rápidos
+    </h6>
+    <div class="row g-3 align-items-end">
+      <div class="col-12 col-md-7">
+        <label class="filter-label mb-1 small fw-bold text-muted">Pesquisar</label>
+        <div class="position-relative">
+          <span
+            class="material-icons-outlined position-absolute top-50 translate-middle-y ms-3"
+            style="pointer-events: none; color: #9ca3af; font-size: 18px"
+          >
+            search
+          </span>
+          <input
+            [(ngModel)]="filters().productName"
+            (ngModelChange)="searchProduct($event)"
+            type="search"
+            class="form-control h-52 ps-5"
+            placeholder="Pesquisar por nome do produto..."
+          />
+        </div>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <label class="filter-label mb-1 small fw-bold text-muted">Tabela de Preço</label>
+        <div class="position-relative">
+          <select
+            class="form-select h-52 pe-5"
+            [ngModel]="filters().priceTableId"
+            (change)="handleChangeTablePrice($event)"
+          >
+            <option [value]="authService.getPriceTableId()">Tabela de Preço Padrão</option>
+            @for (priceTable of priceTables(); track priceTable.id) {
+              <option [value]="priceTable.id">{{ priceTable.nome }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-2">
+        <button
+          class="btn btn-primary h-52 w-100 fw-black text-uppercase d-flex align-items-center justify-content-center gap-2"
+          style="font-size: 12px"
+        >
+          <span class="material-icons-outlined" style="font-size: 18px">filter_alt</span>
+          APLICAR
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="d-flex flex-column gap-3 pb-5">
+    @for (cat of categoriesFiltered(); track cat.id) {
+      <div class="card border-0 rounded-4 shadow-sm overflow-hidden">
+        <button
+          (click)="toggleCategory(cat)"
+          class="card-header bg-primary text-white border-0 py-3 px-4 d-flex justify-content-between align-items-center w-100 text-start shadow-sm"
+          style="border-radius: 0; min-height: 60px; cursor: pointer"
+        >
+          <div class="d-flex align-items-center gap-3">
+            <h6 class="mb-0 fw-black text-uppercase tracking-wider" style="font-size: 12px">
+              {{ cat.nome_categoria }}
+            </h6>
+            @if (cartService.getCategoryProductCount(cat.id) > 0) {
+              <span
+                class="badge rounded-pill bg-white text-primary fw-black"
+                style="font-size: 10px; padding: 4px 8px"
+              >
+                {{ cartService.getCategoryProductCount(cat.id) }}
+                {{ cartService.getCategoryProductCount(cat.id) === 1 ? 'ITEM' : 'ITENS' }}
+              </span>
+            }
+          </div>
+
+          <span
+            class="material-icons-outlined transition-transform"
+            [class.rotate-180]="isCategoryOpen(cat)"
+            style="font-size: 20px"
+          >
+            expand_more
+          </span>
+        </button>
+
+        <!-- <div class="collapse" [class.show]="isCategoryOpen(cat)"> -->
+        <div class="collapse" [class.show]="isCategoryOpen(cat)">
+          <div class="card-body p-0">
+            <div class="list-group list-group-flush">
+              @for (product of cat.produtos; track product.id) {
+                <div
+                  class="list-group-item p-3 border-bottom d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3"
+                >
+                  <div>
+                    <h6 class="fw-black mb-1 fs-6">{{ product.nome_produto }}</h6>
+                    <p
+                      class="text-muted fw-bold mb-1"
+                      style="font-size: 10px; letter-spacing: 0.5px"
+                    >
+                      1 {{ product.unidade }} •
+                      {{ product.valor_total_produto | currency: 'BRL' : 'symbol' : '1.2-2' }}
+                    </p>
+                    <p class="small fw-bold mb-0" style="font-size: 13px">
+                      Preço Unidade:
+                      <span class="text-success fw-black">
+                        {{ product.valor_total_produto | currency: 'BRL' : 'symbol' : '1.2-2' }}
+                      </span>
+                    </p>
+                  </div>
+
+                  <div
+                    class="d-flex align-items-center gap-2 p-1 px-2 rounded-4"
+                    (click)="$event.stopPropagation()"
+                  >
+                    <button
+                      (click)="handleUpdateQuantity(product, -1)"
+                      [disabled]="cartService.getProductQuantity(product.id) === 0"
+                      class="btn btn-light shadow-sm border p-0 d-flex align-items-center justify-content-center"
+                      style="width: 32px; height: 32px; border-radius: 8px !important"
+                    >
+                      <span class="material-icons-outlined" style="font-size: 18px">remove</span>
+                    </button>
+
+                    <span class="fw-black px-2 fs-6">
+                      {{ cartService.getProductQuantity(product.id) }}
+                    </span>
+
+                    <button
+                      (click)="handleUpdateQuantity(product, 1)"
+                      class="btn btn-light shadow-sm border p-0 d-flex align-items-center justify-content-center"
+                      style="width: 32px; height: 32px; border-radius: 8px !important"
+                    >
+                      <span class="material-icons-outlined" style="font-size: 18px">add</span>
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div style="height: 120px"></div>
+
+  <footer
+    class="fixed-bottom bg-white p-4 d-flex flex-column flex-sm-row justify-content-between align-items-center shadow-lg"
+    style="z-index: 1030"
+    [style.left]="authService.isAutoLogin() ? '0 !important' : null"
+    [style.width]="authService.isAutoLogin() ? '100% !important' : null"
+  >
+    <div class="d-flex align-items-center gap-3 mb-3 mb-sm-0">
+      <div
+        class="bg-primary-subtle text-primary p-3 rounded-4 position-relative d-flex align-items-center justify-content-center"
+      >
+        <span class="material-icons-outlined" style="font-size: 28px">shopping_cart</span>
+        @if (cartService.totais().totalItems > 0) {
+          <span
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white"
+            style="font-size: 10px"
+          >
+            {{ cartService.totais().totalItems }}
+          </span>
+        }
+      </div>
+      <div>
+        <div class="filter-label mb-0 ms-0 small fw-bold text-muted">RESUMO DO CARRINHO</div>
+        <div class="h3 fw-black mb-0 text-dark">
+          {{ cartService.totais().total | currency: 'BRL' : 'symbol' : '1.2-2' }}
+        </div>
+      </div>
+    </div>
+
+    <button
+      [disabled]="cartService.totais().totalItems === 0"
+      [routerLink]="['/orders/summary']"
+      class="btn btn-success px-5 py-3 h-52 fw-black text-uppercase d-flex align-items-center gap-2"
+      style="background-color: #10b981; border-color: #10b981; font-size: 12px"
+    >
+      AVANÇAR PARA O RESUMO
+      <span class="material-icons-outlined">chevron_right</span>
+    </button>
+  </footer>
+</div>

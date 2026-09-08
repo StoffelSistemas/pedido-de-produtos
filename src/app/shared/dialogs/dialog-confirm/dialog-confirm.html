@@ -1,0 +1,13 @@
+<mat-dialog-content class="p-4 m-0">
+  <p class="m-0 fs-6">{{ data.message }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions class="d-flex justify-content-end gap-2 px-4 py-3 m-0 border-top">
+  <button class="btn btn-light px-4" [mat-dialog-close]="false">
+    {{ data.cancelText }}
+  </button>
+
+  <button class="btn btn-primary px-4" [mat-dialog-close]="true" cdkFocusInitial>
+    {{ data.confirmText }}
+  </button>
+</mat-dialog-actions>

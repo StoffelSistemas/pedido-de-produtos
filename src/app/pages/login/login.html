@@ -1,0 +1,80 @@
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="card border-0 shadow-sm p-4 p-md-5" style="max-width: 450px; width: 100%">
+    <div class="text-center mb-5">
+      <div
+        class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+        style="width: 64px; height: 64px"
+      >
+        <span class="material-icons-outlined" style="font-size: 32px">lock</span>
+      </div>
+      <h1 class="h3 fw-black mb-1">Acesse sua conta</h1>
+      <p class="text-muted small fw-medium">Informe suas credenciais para continuar</p>
+    </div>
+
+    <form [formGroup]="loginForm">
+      <div class="mb-4">
+        <label class="filter-label mb-1 fw-bold text-muted small">E-mail</label>
+        <div class="position-relative">
+          <span
+            class="material-icons-outlined position-absolute top-50 translate-middle-y ms-3 text-muted"
+            style="pointer-events: none; font-size: 20px"
+          >
+            email
+          </span>
+          <input
+            type="email"
+            class="form-control ps-5 h-52 bg-light border-0"
+            formControlName="email"
+            placeholder="seu@email.com"
+          />
+        </div>
+      </div>
+
+      <div class="mb-2">
+        <label class="filter-label mb-1 fw-bold text-muted small">Senha</label>
+        <div class="position-relative">
+          <span
+            class="material-icons-outlined position-absolute top-50 translate-middle-y ms-3 text-muted"
+            style="pointer-events: none; font-size: 20px"
+          >
+            key
+          </span>
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            class="form-control ps-5 pe-5 h-52 bg-light border-0"
+            placeholder="Sua senha secreta"
+          />
+          <span
+            (click)="showPassword = !showPassword"
+            class="material-icons-outlined position-absolute end-0 top-50 translate-middle-y me-3 text-muted cursor-pointer"
+            style="font-size: 20px; cursor: pointer"
+          >
+            {{ showPassword ? 'visibility_off' : 'visibility' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end mb-4">
+        <!-- <a href="#" class="text-decoration-none small fw-bold text-primary"> Esqueceu a senha? </a> -->
+      </div>
+
+      <button
+        class="btn btn-primary w-100 h-52 shadow-sm fw-black text-uppercase d-flex align-items-center justify-content-center gap-2"
+        style="letter-spacing: 0.5px"
+        (click)="login()"
+        [disabled]="!loginForm.valid"
+      >
+        <span class="material-icons-outlined" style="font-size: 20px">login</span>
+        ENTRAR
+      </button>
+    </form>
+
+    <!-- <div class="text-center mt-4 pt-3 border-top">
+      <p class="text-muted small mb-0">
+        Não tem uma conta?
+        <a href="#" class="fw-black text-primary text-decoration-none">Cadastre-se</a>
+      </p>
+    </div> -->
+  </div>
+</div>

@@ -1,0 +1,112 @@
+<aside class="sidebar d-flex flex-column p-3">
+  <div class="mb-4 px-1">
+    <div class="d-flex p-1 bg-light rounded-pill border-0 shadow-sm">
+      <button
+        (click)="darkMode && onToggleDarkMode()"
+        class="btn flex-fill py-1 border-0 fw-bold transition-all"
+        [ngClass]="!darkMode ? 'bg-white shadow-sm text-primary' : 'text-secondary opacity-50'"
+        style="font-size: 9px; height: 32px"
+      >
+        <i class="ph ph-sun material-icons-outlined fs-6"></i>
+        CLARO
+      </button>
+
+      <button
+        (click)="!darkMode && onToggleDarkMode()"
+        class="btn flex-fill py-1 border-0 fw-bold transition-all"
+        [ngClass]="darkMode ? 'bg-dark text-white shadow-sm' : 'text-secondary opacity-50'"
+        style="font-size: 9px; height: 32px"
+      >
+        <i class="ph ph-moon material-icons-outlined fs-6"></i>
+        ESCURO
+      </button>
+    </div>
+  </div>
+
+  <div class="mb-4 px-1">
+    <div class="d-flex align-items-start gap-2 mb-2">
+      <img
+        src="https://picsum.photos/seed/assistant/40/40"
+        class="rounded-circle border-0 shadow-sm"
+        alt="Avatar"
+        width="32"
+        height="32"
+      />
+      <div
+        class="bg-light p-2 px-3 rounded-4 rounded-top-0 small fw-bold border-0 shadow-sm"
+        style="font-size: 11px"
+      >
+        Olá, parceiro!
+      </div>
+    </div>
+    <div
+      class="bg-light p-2 px-3 rounded-4 small fw-bold ms-4 border-0 shadow-sm"
+      style="font-size: 11px"
+    >
+      O que você gostaria de fazer hoje?
+    </div>
+  </div>
+
+  <nav class="nav flex-column gap-1 mb-auto">
+    <!-- <button
+      type="button"
+      class="nav-link gap-2 transition-all d-flex align-items-center"
+      style="font-size: 13px; padding: 0.625rem 1rem"
+    >
+      <i class="ph ph-squares-four fs-6"></i>
+      Dashboard
+    </button> -->
+
+    <button
+      type="button"
+      class="nav-link gap-2 transition-all d-flex align-items-center"
+      style="font-size: 13px; padding: 0.625rem 1rem"
+      [routerLink]="['/orders']"
+      [routerLinkActive]="'active-link'"
+    >
+      <i class="ph ph-package fs-6"></i>
+      Pedidos
+    </button>
+
+    <!-- <app-nav-item
+      icon="person_outline"
+      label="Meus dados"
+      [active]="false"
+      (click)="handleNavClick()"
+    ></app-nav-item>
+
+    <app-nav-item
+      icon="calendar_today"
+      label="Calendário"
+      [active]="false"
+      (click)="handleNavClick()"
+    ></app-nav-item> -->
+  </nav>
+
+  <div class="mt-auto pt-3" style="border-top: 1px solid var(--card-border)">
+    <div class="d-flex align-items-center gap-2 mb-3 px-1">
+      <div
+        class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm"
+        style="width: 36px; height: 36px; font-size: 14px"
+      >
+        M
+      </div>
+      <div class="overflow-hidden">
+        <div class="small fw-bold text-truncate" style="font-size: 11px">
+          {{ authService.getUser().razao_social }}
+        </div>
+        <div class="text-muted text-truncate" style="font-size: 9px">
+          {{ authService.getUser().email }}
+        </div>
+      </div>
+    </div>
+    <button
+      class="btn btn-outline-danger w-100 fw-bold py-2"
+      style="font-size: 10px; border-color: #ef4444; color: #ef4444"
+      (click)="logout()"
+    >
+      <i class="ph ph-sign-out fs-6"></i>
+      SAIR
+    </button>
+  </div>
+</aside>

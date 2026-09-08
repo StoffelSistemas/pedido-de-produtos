@@ -1,0 +1,9 @@
+<div class="d-flex min-vh-100">
+  @if (!authService.isAutoLogin()) {
+    <app-sidebar [darkMode]="darkMode()" (toggleDarkMode)="toggleDarkMode()" />
+  }
+
+  <main class="flex-grow-1 p-4 p-lg-5 overflow-auto position-relative">
+    <router-outlet />
+  </main>
+</div>
