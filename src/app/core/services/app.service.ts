@@ -13,7 +13,7 @@ export class AppService {
   protected readonly franquias: Record<string, string> = {
     natuicerj: 'https://sistemanatuicerj.stoffelsistemas.com.br/api/integracao',
     natuicepr: 'https://sistemanatuicepr.stoffelsistemas.com.br/api/integracao',
-    sucessogelado: 'https://sucessogelado.stoffelsistemas.com.br/api/integracao',
+    geladodaserra: 'https://geladodaserra.stoffelsistemas.com.br/api/integracao',
     teste: 'https://distribuidora.r2lsoft.com.br/api/integracao',
   };
 
