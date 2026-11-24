@@ -11,6 +11,18 @@
       <p class="text-muted small fw-medium">Informe suas credenciais para continuar</p>
     </div>
 
+    @if (!franquia()) {
+      <div
+        class="alert alert-danger d-flex align-items-center gap-2 rounded-4 small fw-semibold mb-4"
+        role="alert"
+      >
+        <span class="material-icons-outlined flex-shrink-0" style="font-size: 18px">
+          error_outline
+        </span>
+        <span>Franquia não identificada</span>
+      </div>
+    }
+
     <form [formGroup]="loginForm">
       <div class="mb-4">
         <label class="filter-label mb-1 fw-bold text-muted small">E-mail</label>
@@ -60,21 +72,27 @@
       </div>
 
       <button
+        type="submit"
         class="btn btn-primary w-100 h-52 shadow-sm fw-black text-uppercase d-flex align-items-center justify-content-center gap-2"
         style="letter-spacing: 0.5px"
         (click)="login()"
-        [disabled]="!loginForm.valid"
+        [disabled]="!franquia() || !loginForm.valid"
       >
         <span class="material-icons-outlined" style="font-size: 20px">login</span>
         ENTRAR
       </button>
     </form>
 
-    <!-- <div class="text-center mt-4 pt-3 border-top">
+    <div class="text-center mt-4 pt-3 border-top">
       <p class="text-muted small mb-0">
         Não tem uma conta?
-        <a href="#" class="fw-black text-primary text-decoration-none">Cadastre-se</a>
+        <a
+          [routerLink]="franquia() ? ['/register', franquia()] : ['/register']"
+          class="fw-black text-primary text-decoration-none"
+        >
+          Cadastre-se
+        </a>
       </p>
-    </div> -->
+    </div>
   </div>
 </div>

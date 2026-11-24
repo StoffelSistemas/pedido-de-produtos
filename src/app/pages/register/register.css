@@ -1,0 +1,70 @@
+:host {
+  display: block;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 860px;
+}
+
+.section-title-small {
+  margin-bottom: 0;
+  letter-spacing: 1.2px;
+}
+
+.btn-lookup-cnpj {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
+  color: var(--bs-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-lookup-cnpj:hover:not(:disabled) {
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+.btn-lookup-cnpj:disabled {
+  color: var(--text-muted);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.form-select:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+  background-color: var(--hover-bg);
+}
+
+.contributor-warning {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #b45309;
+  background-color: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+:host-context(.dark-mode) .contributor-warning {
+  color: #fbbf24;
+  background-color: rgba(245, 158, 11, 0.14);
+  border-color: rgba(251, 191, 36, 0.25);
+}
+
+.invalid-feedback {
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-left: 0.75rem;
+}
+
+.form-text {
+  font-size: 0.78rem;
+  margin-left: 0.75rem;
+}

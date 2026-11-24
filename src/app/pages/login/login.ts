@@ -1,31 +1,44 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../core/services/notification.service';
-import { firstValueFrom } from 'rxjs';
+import { distinctUntilChanged, firstValueFrom, map } from 'rxjs';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login implements OnInit {
   showPassword = false;
+  protected readonly franquia = signal<string | null>(null);
 
   private readonly notificationService = inject(NotificationService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    const franquia = this.activatedRoute.snapshot.params['franquia'];
-    if (franquia && this.authService.isFranquia(franquia)) {
-      this.authService.setFranquia(franquia);
-    } else {
-      this.notificationService.error('Franquia não identificada!');
-    }
+    this.activatedRoute.params
+      .pipe(
+        map((params) => params['franquia'] as string | undefined),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((paramFranquia) => {
+        if (paramFranquia && this.authService.isFranquia(paramFranquia)) {
+          this.authService.setFranquia(paramFranquia);
+          this.franquia.set(paramFranquia);
+        } else {
+          this.franquia.set(null);
+          this.notificationService.error('Franquia não identificada');
+        }
+      });
+
     this.router.navigate([], { queryParams: {} });
   }
 
@@ -35,6 +48,11 @@ export class Login implements OnInit {
   });
 
   async login() {
+    if (!this.franquia()) {
+      this.notificationService.error('Franquia não identificada');
+      return;
+    }
+
     const email = this.loginForm.get('email')?.value;
     const password = this.loginForm.get('password')?.value;
 

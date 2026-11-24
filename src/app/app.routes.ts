@@ -6,11 +6,24 @@ import { AutoLogin } from './pages/auto-login/auto-login';
 import { authGuard } from './core/guards/auth.guard';
 import { Login } from './pages/login/login';
 import { OrderSummary } from './pages/orders/order-summary/order-summary';
+import { Register } from './pages/register/register';
 
 export const routes: Routes = [
   {
+    path: 'login',
+    component: Login,
+  },
+  {
     path: 'login/:franquia',
     component: Login,
+  },
+  {
+    path: 'register',
+    component: Register,
+  },
+  {
+    path: 'register/:franquia',
+    component: Register,
   },
   {
     path: 'auto-login',

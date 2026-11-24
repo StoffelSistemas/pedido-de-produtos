@@ -1,0 +1,430 @@
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light py-4 py-md-5 px-3">
+  <div class="card border-0 shadow-sm p-4 p-md-5 register-card">
+    <div class="text-center mb-4 pb-2">
+      <div
+        class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+        style="width: 64px; height: 64px"
+      >
+        <span class="material-icons-outlined" style="font-size: 32px">person_add</span>
+      </div>
+      <h1 class="h3 fw-black mb-1">Cadastro de Cliente</h1>
+      <p class="text-muted small fw-medium mb-0">
+        Preencha os dados abaixo para solicitar seu cadastro
+      </p>
+    </div>
+
+    @if (!franquia()) {
+      <div
+        class="alert alert-danger d-flex align-items-center gap-2 rounded-4 small fw-semibold mb-4"
+        role="alert"
+      >
+        <span class="material-icons-outlined flex-shrink-0" style="font-size: 18px">
+          error_outline
+        </span>
+        <span>Franquia não identificada</span>
+      </div>
+    }
+
+    <form [formGroup]="registerForm" (ngSubmit)="submit()" novalidate>
+      <!-- DADOS DO CLIENTE -->
+      <section class="mb-4 pb-3 border-bottom">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="material-icons-outlined text-primary" style="font-size: 20px">badge</span>
+          <h2 class="section-title-small mb-0">Dados do Cliente</h2>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-12 col-md-4">
+            <label for="register-tipo" class="filter-label mb-1">Tipo (CNPJ/CPF) *</label>
+            <select
+              id="register-tipo"
+              class="form-select h-52"
+              formControlName="tipo"
+            >
+              <option value="CNPJ">CNPJ</option>
+              <option value="CPF">CPF</option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-8">
+            <label for="register-cpf-cnpj" class="filter-label mb-1">
+              {{ isCnpjSelected ? 'CNPJ' : 'CPF' }} (CNPJ/CPF) *
+            </label>
+            <div class="position-relative">
+              <input
+                id="register-cpf-cnpj"
+                type="text"
+                inputmode="numeric"
+                class="form-control h-52 pe-5"
+                [class.is-invalid]="hasFieldError('cpfCnpj')"
+                formControlName="cpfCnpj"
+                [attr.maxlength]="isCnpjSelected ? 18 : 14"
+                [placeholder]="isCnpjSelected ? '00.000.000/0000-00' : '000.000.000-00'"
+                (input)="handleDocumentInput($event)"
+              />
+
+              @if (isCnpjSelected) {
+                @if (isSearchingCnpj()) {
+                  <span
+                    class="position-absolute end-0 top-50 translate-middle-y me-3 d-flex align-items-center"
+                    aria-label="Consultando CNPJ"
+                  >
+                    <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+                  </span>
+                } @else {
+                  <button
+                    type="button"
+                    class="btn-lookup-cnpj position-absolute end-0 top-50 translate-middle-y me-2"
+                    [disabled]="!canLookupCnpj"
+                    (click)="triggerManualCnpjLookup()"
+                    title="Consultar dados do CNPJ"
+                    aria-label="Consultar dados do CNPJ"
+                  >
+                    <span class="material-icons-outlined" style="font-size: 20px">search</span>
+                  </button>
+                }
+              }
+            </div>
+
+            @if (isSearchingCnpj()) {
+              <div class="form-text text-primary fw-semibold mt-1">
+                Consultando dados na Receita Federal...
+              </div>
+            } @else if (cnpjLookupError()) {
+              <div class="form-text text-danger fw-semibold mt-1">
+                {{ cnpjLookupError() }}
+              </div>
+            } @else if (cnpjLoaded()) {
+              <div class="form-text text-success fw-semibold mt-1">
+                Dados preenchidos automaticamente. Confira antes de enviar.
+              </div>
+            }
+
+            @if (hasFieldError('cpfCnpj')) {
+              <div class="invalid-feedback d-block">
+                @if (registerForm.controls.cpfCnpj.hasError('required')) {
+                  Informe o {{ isCnpjSelected ? 'CNPJ' : 'CPF' }}.
+                } @else if (registerForm.controls.cpfCnpj.hasError('invalidCnpj')) {
+                  CNPJ inválido. Verifique os dígitos informados.
+                } @else if (registerForm.controls.cpfCnpj.hasError('invalidCpf')) {
+                  CPF inválido. Verifique os dígitos informados.
+                }
+              </div>
+            }
+          </div>
+
+          <div class="col-12">
+            <label for="register-razao-social" class="filter-label mb-1">Razão Social *</label>
+            <input
+              id="register-razao-social"
+              type="text"
+              class="form-control h-52"
+              [class.is-invalid]="hasFieldError('razaoSocial')"
+              formControlName="razaoSocial"
+              placeholder="Razão social da empresa ou nome completo"
+            />
+            @if (hasFieldError('razaoSocial')) {
+              <div class="invalid-feedback d-block">Informe a razão social.</div>
+            }
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="register-im" class="filter-label mb-1">Inscrição Municipal</label>
+            <input
+              id="register-im"
+              type="text"
+              class="form-control h-52"
+              formControlName="inscricaoMunicipal"
+              placeholder="Opcional"
+            />
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="register-ie" class="filter-label mb-1">Inscrição Estadual</label>
+            <input
+              id="register-ie"
+              type="text"
+              class="form-control h-52"
+              formControlName="inscricaoEstadual"
+              placeholder="Preenchida pela consulta do CNPJ ou digite"
+            />
+          </div>
+
+          <div class="col-12">
+            <label for="register-tipo-contribuinte" class="filter-label mb-1">
+              Tipo Contribuinte
+            </label>
+            <select
+              id="register-tipo-contribuinte"
+              class="form-select h-52"
+              formControlName="tipoContribuinte"
+            >
+              <option value="">Definido automaticamente após consulta do CNPJ</option>
+              @for (option of tipoContribuinteOptions; track option) {
+                <option [value]="option">{{ option }}</option>
+              }
+            </select>
+            <div class="contributor-warning d-flex align-items-start gap-2 mt-2">
+              <span class="material-icons-outlined flex-shrink-0" style="font-size: 16px">
+                info
+              </span>
+              <span>{{ tipoContribuinteWarning }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DADOS DE CONTATO -->
+      <section class="mb-4 pb-3 border-bottom">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="material-icons-outlined text-primary" style="font-size: 20px">
+            contact_phone
+          </span>
+          <h2 class="section-title-small mb-0">Dados de Contato</h2>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label for="register-nome-responsavel" class="filter-label mb-1">
+              Nome Responsável *
+            </label>
+            <input
+              id="register-nome-responsavel"
+              type="text"
+              class="form-control h-52"
+              [class.is-invalid]="hasFieldError('nomeResponsavel')"
+              formControlName="nomeResponsavel"
+              placeholder="Nome completo do responsável"
+            />
+            @if (hasFieldError('nomeResponsavel')) {
+              <div class="invalid-feedback d-block">Informe o nome do responsável.</div>
+            }
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="register-email" class="filter-label mb-1">E-mail *</label>
+            <input
+              id="register-email"
+              type="email"
+              class="form-control h-52"
+              [class.is-invalid]="hasFieldError('email')"
+              formControlName="email"
+              placeholder="contato@empresa.com.br"
+              aria-describedby="register-email-hint"
+            />
+            <div
+              id="register-email-hint"
+              class="form-text d-flex align-items-center gap-1 text-muted fw-medium mt-1"
+            >
+              <span class="material-icons-outlined flex-shrink-0" style="font-size: 15px">
+                info
+              </span>
+              <span>E-mail que será usado para entrar no sistema</span>
+            </div>
+            @if (hasFieldError('email')) {
+              <div class="invalid-feedback d-block">
+                @if (registerForm.controls.email.hasError('required')) {
+                  Informe o e-mail.
+                } @else {
+                  Informe um e-mail válido.
+                }
+              </div>
+            }
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="register-tel-celular" class="filter-label mb-1">
+              Telefone Celular
+            </label>
+            <input
+              id="register-tel-celular"
+              type="tel"
+              inputmode="numeric"
+              class="form-control h-52"
+              [class.is-invalid]="hasFieldError('telefoneCelular')"
+              formControlName="telefoneCelular"
+              maxlength="15"
+              placeholder="(00) 00000-0000"
+              (input)="handlePhoneInput('telefoneCelular', $event)"
+            />
+            @if (hasFieldError('telefoneCelular')) {
+              <div class="invalid-feedback d-block">Telefone celular inválido.</div>
+            }
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="register-tel-comercial" class="filter-label mb-1">
+              Telefone Comercial
+            </label>
+            <input
+              id="register-tel-comercial"
+              type="tel"
+              inputmode="numeric"
+              class="form-control h-52"
+              [class.is-invalid]="hasFieldError('telefoneComercial')"
+              formControlName="telefoneComercial"
+              maxlength="15"
+              placeholder="(00) 0000-0000"
+              (input)="handlePhoneInput('telefoneComercial', $event)"
+            />
+            @if (hasFieldError('telefoneComercial')) {
+              <div class="invalid-feedback d-block">Telefone comercial inválido.</div>
+            }
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="register-tel-residencial" class="filter-label mb-1">
+              Telefone Residencial
+            </label>
+            <input
+              id="register-tel-residencial"
+              type="tel"
+              inputmode="numeric"
+              class="form-control h-52"
+              [class.is-invalid]="hasFieldError('telefoneResidencial')"
+              formControlName="telefoneResidencial"
+              maxlength="15"
+              placeholder="(00) 0000-0000"
+              (input)="handlePhoneInput('telefoneResidencial', $event)"
+            />
+            @if (hasFieldError('telefoneResidencial')) {
+              <div class="invalid-feedback d-block">Telefone residencial inválido.</div>
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- ENDEREÇO -->
+      <section class="mb-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="material-icons-outlined text-primary" style="font-size: 20px">
+            location_on
+          </span>
+          <h2 class="section-title-small mb-0">Endereço</h2>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-12 col-md-4">
+            <label for="register-cep" class="filter-label mb-1">CEP *</label>
+            <input
+              id="register-cep"
+              type="text"
+              inputmode="numeric"
+              class="form-control h-52"
+              [class.is-invalid]="hasFieldError('cep')"
+              formControlName="cep"
+              maxlength="9"
+              placeholder="00000-000"
+              (input)="handleCepInput($event)"
+            />
+            @if (hasFieldError('cep')) {
+              <div class="invalid-feedback d-block">
+                @if (registerForm.controls.cep.hasError('required')) {
+                  Informe o CEP.
+                } @else {
+                  CEP inválido.
+                }
+              </div>
+            }
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="register-endereco" class="filter-label mb-1">Endereço *</label>
+            <input
+              id="register-endereco"
+              type="text"
+              class="form-control h-52"
+              [class.is-invalid]="hasFieldError('endereco')"
+              formControlName="endereco"
+              placeholder="Rua, Avenida, etc."
+            />
+            @if (hasFieldError('endereco')) {
+              <div class="invalid-feedback d-block">Informe o endereço.</div>
+            }
+          </div>
+
+          <div class="col-12 col-md-2">
+            <label for="register-numero" class="filter-label mb-1">Nº *</label>
+            <input
+              id="register-numero"
+              type="text"
+              class="form-control h-52"
+              [class.is-invalid]="hasFieldError('numero')"
+              formControlName="numero"
+              placeholder="123"
+            />
+            @if (hasFieldError('numero')) {
+              <div class="invalid-feedback d-block">Informe o nº.</div>
+            }
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="register-complemento" class="filter-label mb-1">Complemento</label>
+            <input
+              id="register-complemento"
+              type="text"
+              class="form-control h-52"
+              formControlName="complemento"
+              placeholder="Sala, Bloco, Loja..."
+            />
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="register-bairro" class="filter-label mb-1">Bairro *</label>
+            <input
+              id="register-bairro"
+              type="text"
+              class="form-control h-52"
+              [class.is-invalid]="hasFieldError('bairro')"
+              formControlName="bairro"
+              placeholder="Bairro"
+            />
+            @if (hasFieldError('bairro')) {
+              <div class="invalid-feedback d-block">Informe o bairro.</div>
+            }
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="register-cidade" class="filter-label mb-1">Cidade *</label>
+            <input
+              id="register-cidade"
+              type="text"
+              class="form-control h-52"
+              [class.is-invalid]="hasFieldError('cidade')"
+              formControlName="cidade"
+              placeholder="Cidade"
+              (input)="handleCidadeInput()"
+            />
+            @if (hasFieldError('cidade')) {
+              <div class="invalid-feedback d-block">Informe a cidade.</div>
+            }
+          </div>
+        </div>
+      </section>
+
+      <button
+        type="submit"
+        [disabled]="!franquia()"
+        class="btn btn-primary w-100 h-52 shadow-sm fw-black text-uppercase d-flex align-items-center justify-content-center gap-2"
+        style="letter-spacing: 0.5px"
+      >
+        <span class="material-icons-outlined" style="font-size: 20px">how_to_reg</span>
+        CADASTRAR
+      </button>
+    </form>
+
+    @if (franquia()) {
+      <div class="text-center mt-4 pt-3 border-top">
+        <p class="text-muted small mb-0">
+          Já tem uma conta?
+          <a
+            [routerLink]="['/login', franquia()]"
+            class="fw-black text-primary text-decoration-none"
+          >
+            Entrar
+          </a>
+        </p>
+      </div>
+    }
+  </div>
+</div>
