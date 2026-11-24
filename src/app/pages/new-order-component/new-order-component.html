@@ -8,7 +8,7 @@
     </div>
     <button
       (click)="handleBackToOrders()"
-      class="btn btn-light px-4 py-3 h-52 border fw-bold d-flex align-items-center gap-2"
+      class="btn btn-light px-4 py-3 h-52 border fw-bold d-flex align-items-center justify-content-center gap-2 w-100 w-sm-auto"
     >
       <span class="material-icons-outlined">arrow_back</span>
       VOLTAR AO HISTÓRICO
@@ -133,20 +133,36 @@
                     (click)="$event.stopPropagation()"
                   >
                     <button
+                      type="button"
                       (click)="handleUpdateQuantity(product, -1)"
                       [disabled]="cartService.getProductQuantity(product.id) === 0"
+                      [attr.aria-label]="'Diminuir quantidade de ' + product.nome_produto"
                       class="btn btn-light shadow-sm border p-0 d-flex align-items-center justify-content-center"
                       style="width: 32px; height: 32px; border-radius: 8px !important"
                     >
                       <span class="material-icons-outlined" style="font-size: 18px">remove</span>
                     </button>
 
-                    <span class="fw-black px-2 fs-6">
-                      {{ cartService.getProductQuantity(product.id) }}
-                    </span>
+                    <input
+                      type="text"
+                      inputmode="numeric"
+                      pattern="[0-9]*"
+                      [attr.maxlength]="maxQuantityDigits"
+                      class="quantity-input text-center fw-black"
+                      [attr.aria-label]="'Quantidade de ' + product.nome_produto"
+                      [value]="getProductInputValue(product.id)"
+                      (focus)="handleQuantityFocus($event)"
+                      (input)="handleQuantityInput(product, $event)"
+                      (blur)="handleQuantityBlur(product.id, $event)"
+                      (keydown.enter)="$any($event.target).blur()"
+                      (keydown.arrowUp)="handleQuantityArrowStep($event, product, 1)"
+                      (keydown.arrowDown)="handleQuantityArrowStep($event, product, -1)"
+                    />
 
                     <button
+                      type="button"
                       (click)="handleUpdateQuantity(product, 1)"
+                      [attr.aria-label]="'Aumentar quantidade de ' + product.nome_produto"
                       class="btn btn-light shadow-sm border p-0 d-flex align-items-center justify-content-center"
                       style="width: 32px; height: 32px; border-radius: 8px !important"
                     >
@@ -165,29 +181,33 @@
   <div style="height: 120px"></div>
 
   <footer
-    class="fixed-bottom bg-white p-4 d-flex flex-column flex-sm-row justify-content-between align-items-center shadow-lg"
+    class="fixed-bottom bg-white p-3 p-sm-4 d-flex flex-column flex-sm-row justify-content-between align-items-center shadow-lg"
     style="z-index: 1030"
     [style.left]="authService.isAutoLogin() ? '0 !important' : null"
     [style.width]="authService.isAutoLogin() ? '100% !important' : null"
   >
-    <div class="d-flex align-items-center gap-3 mb-3 mb-sm-0">
-      <div
-        class="bg-primary-subtle text-primary p-3 rounded-4 position-relative d-flex align-items-center justify-content-center"
-      >
-        <span class="material-icons-outlined" style="font-size: 28px">shopping_cart</span>
-        @if (cartService.totais().totalItems > 0) {
-          <span
-            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white"
-            style="font-size: 10px"
-          >
-            {{ cartService.totais().totalItems }}
-          </span>
-        }
-      </div>
-      <div>
-        <div class="filter-label mb-0 ms-0 small fw-bold text-muted">RESUMO DO CARRINHO</div>
-        <div class="h3 fw-black mb-0 text-dark">
-          {{ cartService.totais().total | currency: 'BRL' : 'symbol' : '1.2-2' }}
+    <div
+      class="d-flex align-items-center justify-content-between justify-content-sm-start w-100 w-sm-auto gap-3 mb-3 mb-sm-0"
+    >
+      <div class="d-flex align-items-center gap-3">
+        <div
+          class="bg-primary-subtle text-primary p-3 rounded-4 position-relative d-flex align-items-center justify-content-center"
+        >
+          <span class="material-icons-outlined" style="font-size: 28px">shopping_cart</span>
+          @if (cartService.totais().totalItems > 0) {
+            <span
+              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white"
+              style="font-size: 10px"
+            >
+              {{ cartService.totais().totalItems }}
+            </span>
+          }
+        </div>
+        <div>
+          <div class="filter-label mb-0 ms-0 small fw-bold text-muted">RESUMO DO CARRINHO</div>
+          <div class="h3 fw-black mb-0 text-dark">
+            {{ cartService.totais().total | currency: 'BRL' : 'symbol' : '1.2-2' }}
+          </div>
         </div>
       </div>
     </div>
@@ -195,7 +215,7 @@
     <button
       [disabled]="cartService.totais().totalItems === 0"
       [routerLink]="['/orders/summary']"
-      class="btn btn-success px-5 py-3 h-52 fw-black text-uppercase d-flex align-items-center gap-2"
+      class="btn btn-success px-4 px-sm-5 py-3 h-52 fw-black text-uppercase d-flex align-items-center justify-content-center gap-2 w-100 w-sm-auto"
       style="background-color: #10b981; border-color: #10b981; font-size: 12px"
     >
       AVANÇAR PARA O RESUMO

@@ -44,18 +44,30 @@ export class CartService {
     localStorage.setItem('pedido_produtos_cart', JSON.stringify(state));
   }
 
-  addProduct(product: Product) {
+  private updateProductQuantity(
+    product: Product,
+    resolveQuantity: (currentQuantity: number, existsInCart: boolean) => number,
+  ) {
     this.cart.update((oldState) => {
       const index = oldState.products.findIndex((p) => p.id === product.id);
+      const existsInCart = index !== -1;
+      const currentQuantity = existsInCart ? oldState.products[index].quantity : 0;
+      const rawNext = resolveQuantity(currentQuantity, existsInCart);
+      const nextQuantity = Number.isFinite(rawNext) ? Math.max(0, Math.floor(rawNext)) : 0;
+
       let newProducts = [...oldState.products];
 
-      if (index !== -1) {
+      if (nextQuantity === 0) {
+        if (existsInCart) {
+          newProducts = newProducts.filter((p) => p.id !== product.id);
+        }
+      } else if (existsInCart) {
         newProducts[index] = {
           ...newProducts[index],
-          quantity: newProducts[index].quantity + 1,
+          quantity: nextQuantity,
         };
       } else {
-        newProducts.push({ ...product, quantity: product.quantity || 1 });
+        newProducts.push({ ...product, quantity: nextQuantity });
       }
 
       const newState = { ...oldState, products: newProducts };
@@ -64,24 +76,18 @@ export class CartService {
     });
   }
 
+  addProduct(product: Product) {
+    this.updateProductQuantity(product, (current, exists) =>
+      exists ? current + 1 : product.quantity || 1,
+    );
+  }
+
   removeProduct(product: Product) {
-    this.cart.update((oldState) => {
-      const index = oldState.products.findIndex((p) => p.id === product.id);
-      let newProducts = [...oldState.products];
+    this.updateProductQuantity(product, (current, exists) => (exists ? current - 1 : 0));
+  }
 
-      if (index !== -1) {
-        newProducts[index] = {
-          ...newProducts[index],
-          quantity: newProducts[index].quantity - 1,
-        };
-
-        newProducts = newProducts.filter((p) => p.quantity > 0);
-      }
-
-      const newState = { ...oldState, products: newProducts };
-      this.saveToLocalStorage(newState);
-      return newState;
-    });
+  setProductQuantity(product: Product, quantity: number) {
+    this.updateProductQuantity(product, () => quantity);
   }
 
   updateShipping(cost: number, address: string) {

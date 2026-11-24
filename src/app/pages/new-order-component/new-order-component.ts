@@ -62,6 +62,8 @@ export class NewOrderComponent implements OnInit {
 
   // Estado Local
   openCategories = signal<Category[]>([]);
+  protected emptyInputProductId = signal<string | null>(null);
+  protected readonly maxQuantityDigits = 6;
 
   ngOnInit(): void {
     this.priceTableService.getPriceTables().subscribe((response: any) => {
@@ -143,7 +145,55 @@ export class NewOrderComponent implements OnInit {
     return findedCategory?.produtos.reduce((acc, p) => acc + p.quantity, 0) || 0;
   }
 
+  getProductInputValue(productId: string): string {
+    if (this.emptyInputProductId() === productId) {
+      return '';
+    }
+
+    return String(this.cartService.getProductQuantity(productId));
+  }
+
+  handleQuantityFocus(event: FocusEvent): void {
+    const input = event.target as HTMLInputElement;
+    input.select();
+  }
+
+  handleQuantityInput(product: Product, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const digits = input.value.replace(/\D+/g, '').slice(0, this.maxQuantityDigits);
+
+    if (digits === '') {
+      this.emptyInputProductId.set(product.id);
+      input.value = '';
+      this.cartService.setProductQuantity(product, 0);
+      return;
+    }
+
+    const quantity = Number.parseInt(digits, 10);
+    this.emptyInputProductId.set(null);
+    input.value = String(quantity);
+    this.cartService.setProductQuantity(product, quantity);
+  }
+
+  handleQuantityBlur(productId: string, event: FocusEvent): void {
+    if (this.emptyInputProductId() === productId) {
+      this.emptyInputProductId.set(null);
+    }
+
+    const input = event.target as HTMLInputElement;
+    input.value = String(this.cartService.getProductQuantity(productId));
+  }
+
+  handleQuantityArrowStep(event: Event, product: Product, delta: number): void {
+    event.preventDefault();
+    this.handleUpdateQuantity(product, delta);
+  }
+
   handleUpdateQuantity(product: Product, delta: number): void {
+    if (this.emptyInputProductId() === product.id) {
+      this.emptyInputProductId.set(null);
+    }
+
     if (delta === -1) {
       this.cartService.removeProduct(product);
     } else {
