@@ -8,13 +8,17 @@ import { DialogConfirm } from '../../shared/dialogs/dialog-confirm/dialog-confir
 export class DialogService {
   private dialog = inject(MatDialog);
 
-  openConfirmDialog(message?: string) {
+  openConfirmDialog(
+    message?: string,
+    confirmText: string = 'Sim',
+    cancelText: string = 'Não',
+  ) {
     return this.dialog
       .open(DialogConfirm, {
         data: {
           message: message || 'Realmente deseja realizar esta ação?',
-          confirmText: 'Sim',
-          cancelText: 'Não',
+          confirmText,
+          cancelText,
         },
         width: '400px',
         disableClose: true,

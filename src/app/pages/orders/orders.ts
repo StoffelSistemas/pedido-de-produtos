@@ -46,7 +46,7 @@ export class Orders {
   filteredOrders = signal(<any[]>[]);
   filteredOrdersPaginator = {
     pageIndex: 0,
-    pageSize: 4,
+    pageSize: 5,
     length: 0,
   };
   currentOrder = signal(<any | null>null);

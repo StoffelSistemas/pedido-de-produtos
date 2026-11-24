@@ -8,7 +8,7 @@
         Acompanhe seus pedidos anteriores e status de entrega
       </p>
     </div>
-    <button [routerLink]="['/orders/new']" class="btn btn-primary shadow-sm h-52 px-5">
+    <button [routerLink]="['/orders/new']" class="btn btn-primary shadow-sm h-52 px-5 w-100 w-sm-auto">
       <span class="material-icons-outlined">add_shopping_cart</span>
       NOVO PEDIDO
     </button>
@@ -121,7 +121,7 @@
                   } @else if (order.orcamento_pedido === 'Orçamento') {
                     ENVIADO
                   } @else if (order.orcamento_pedido === 'Pedido') {
-                    REALIZADO
+                    CONFIRMADO
                   }
                 </span>
                 <!-- <app-status-badge [status]="order.orcamento_pedido"></app-status-badge> -->
@@ -150,7 +150,7 @@
                 </span>
               </div>
             </div>
-            <div class="col-auto d-flex flex-wrap gap-2">
+            <div class="col-12 col-sm-auto d-flex justify-content-end gap-2">
               <!-- <button
                 class="btn btn-light text-danger fw-bold px-3 py-1"
                 style="font-size: 10px; height: 36px"
@@ -161,7 +161,7 @@
               <button
                 data-bs-toggle="modal"
                 data-bs-target="#orderDetailsModal"
-                class="btn btn-light text-muted fw-bold px-3 py-1"
+                class="btn btn-light text-muted fw-bold px-3 py-1 w-100 w-sm-auto"
                 style="font-size: 10px; height: 36px"
                 (click)="setCurrentOrder(order)"
               >
@@ -229,7 +229,7 @@
                 } @else if (currentOrder()?.orcamento_pedido === 'Orçamento') {
                   ENVIADO
                 } @else if (currentOrder()?.orcamento_pedido === 'Pedido') {
-                  REALIZADO
+                  CONFIRMADO
                 }
               </span>
               <span class="text-muted small fw-bold">|</span>

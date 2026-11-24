@@ -7,6 +7,7 @@ import { CategoryService } from '../../../core/services/category.service';
 import { Category } from '../../../core/interfaces/category';
 import { OrderService } from '../../../core/services/order.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { DialogService } from '../../../core/services/dialog.service';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -22,6 +23,7 @@ export class OrderSummary implements OnInit {
   private readonly router = inject(Router);
   private readonly orderService = inject(OrderService);
   private readonly categoryService = inject(CategoryService);
+  private readonly dialogService = inject(DialogService);
 
   protected categories = signal(<Category[]>[]);
 
@@ -46,7 +48,19 @@ export class OrderSummary implements OnInit {
       });
   }
 
-  async confirm() {
+  confirm() {
+    this.dialogService
+      .openConfirmDialog('Deseja realmente confirmar e enviar o pedido?')
+      .subscribe(async (result) => {
+        if (!result) {
+          return;
+        }
+
+        await this.submitOrder();
+      });
+  }
+
+  private async submitOrder() {
     const authUser = this.authService.getUser();
     const cart = this.cartService.state();
     const fabricantesIds = [...new Set(cart.products.map((p) => p.fabricante_id))];

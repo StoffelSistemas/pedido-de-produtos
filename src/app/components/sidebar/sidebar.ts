@@ -12,12 +12,14 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class Sidebar {
   @Input() darkMode: boolean = false;
+  @Input() isOpen: boolean = false;
 
   protected readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   @Output() toggleDarkMode = new EventEmitter<void>();
   @Output() viewChange = new EventEmitter<string>();
+  @Output() close = new EventEmitter<void>();
 
   onToggleDarkMode() {
     this.toggleDarkMode.emit();
@@ -36,6 +38,7 @@ export class Sidebar {
   @Input() label: string = '';
 
   logout() {
+    this.close.emit();
     this.authService.logout();
     return this.router.navigate([`/login/${this.authService.getFranquia()}`]);
   }

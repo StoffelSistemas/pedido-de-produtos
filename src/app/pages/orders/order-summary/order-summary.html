@@ -8,7 +8,10 @@
         Revise os itens e os custos logísticos antes de confirmar
       </p>
     </div>
-    <button class="btn btn-light px-4 py-3 h-52 border fw-bold" [routerLink]="['/orders/new']">
+    <button
+      class="btn btn-light px-4 py-3 h-52 border fw-bold d-flex align-items-center justify-content-center gap-2 w-100 w-sm-auto"
+      [routerLink]="['/orders/new']"
+    >
       <span class="material-icons-outlined">edit</span>
       <span>ALTERAR ITENS</span>
     </button>
@@ -184,14 +187,14 @@
   <div style="height: 180px"></div>
 
   <footer
-    class="fixed-bottom p-4 d-flex justify-content-center shadow-lg"
+    class="fixed-bottom p-3 p-sm-4 d-flex justify-content-center shadow-lg"
     style="z-index: 1030"
     [style.left]="authService.isAutoLogin() ? '0 !important' : null"
     [style.width]="authService.isAutoLogin() ? '100% !important' : null"
   >
     <button
-      class="btn btn-success px-5 py-4 w-100 shadow-xl d-flex align-items-center justify-content-center gap-2"
-      style="height: 64px; background-color: #10b981; border-color: #10b981; max-width: 500px"
+      class="btn btn-success px-4 px-sm-5 py-3 py-sm-4 w-100 shadow-xl d-flex align-items-center justify-content-center gap-2"
+      style="height: 60px; background-color: #10b981; border-color: #10b981; max-width: 500px"
       (click)="confirm()"
     >
       <span class="material-icons-outlined">check_circle</span>

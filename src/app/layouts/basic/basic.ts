@@ -1,8 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { Sidebar } from '../../components/sidebar/sidebar';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-basic',
@@ -12,9 +13,26 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class Basic implements OnInit {
   protected readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+
   darkMode = signal(false);
+  sidebarOpen = signal(false);
+
+  toggleSidebar() {
+    this.sidebarOpen.update((open) => !open);
+  }
+
+  closeSidebar() {
+    this.sidebarOpen.set(false);
+  }
 
   ngOnInit() {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.closeSidebar();
+      });
+
     if (this.authService.isAutoLogin()) {
       return this.setLightMode();
     }

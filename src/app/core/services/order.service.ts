@@ -1,12 +1,17 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { AppService } from './app.service';
 import { HttpParams } from '@angular/common/http';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrderService extends AppService {
-  getOrders(params: { page: number; limit: number, cliente_id: number }) {
+  private readonly authService = inject(AuthService);
+
+  getOrders(params: { page: number; limit: number; cliente_id?: number | string }) {
+    const clienteId = params.cliente_id ?? this.authService.getUser()?.id;
+
     const httpParams = new HttpParams({
       fromObject: {
         page: params.page.toString(),
@@ -14,7 +19,7 @@ export class OrderService extends AppService {
       },
     });
 
-    return this.http.get(`${this.apiUrl}/pedidos_produtos?cliente_id=166`, {
+    return this.http.get(`${this.apiUrl}/pedidos_produtos?cliente_id=${clienteId}`, {
       headers: this.headers,
       params: httpParams,
     });

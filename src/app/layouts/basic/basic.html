@@ -1,9 +1,45 @@
-<div class="d-flex min-vh-100">
+<div class="layout-container d-flex flex-column flex-lg-row min-vh-100 position-relative">
   @if (!authService.isAutoLogin()) {
-    <app-sidebar [darkMode]="darkMode()" (toggleDarkMode)="toggleDarkMode()" />
+    <!-- Barra de navegação superior para mobile -->
+    <header
+      class="mobile-navbar d-flex d-lg-none align-items-center justify-content-between px-3 py-2 border-bottom position-sticky top-0 w-100"
+    >
+      <button
+        type="button"
+        class="btn btn-light p-2 rounded-3 d-flex align-items-center justify-content-center border"
+        style="width: 42px; height: 42px"
+        (click)="toggleSidebar()"
+        aria-label="Menu"
+      >
+        <i class="ph ph-list fs-4"></i>
+      </button>
+
+      <span class="fw-black fs-6 text-truncate mx-2">
+        Pedido de Produtos
+      </span>
+
+      <div
+        class="user-avatar-circle bg-primary text-white fw-bold shadow-sm"
+        style="font-size: 13px"
+      >
+        {{ authService.getUser()?.razao_social ? authService.getUser().razao_social.charAt(0).toUpperCase() : 'U' }}
+      </div>
+    </header>
+
+    <!-- Backdrop escurecido quando a sidebar estiver aberta no mobile -->
+    @if (sidebarOpen()) {
+      <div class="sidebar-backdrop d-lg-none" (click)="closeSidebar()"></div>
+    }
+
+    <app-sidebar
+      [darkMode]="darkMode()"
+      [isOpen]="sidebarOpen()"
+      (toggleDarkMode)="toggleDarkMode()"
+      (close)="closeSidebar()"
+    />
   }
 
-  <main class="flex-grow-1 p-4 p-lg-5 overflow-auto position-relative">
+  <main class="main-content flex-grow-1 p-3 p-sm-4 p-lg-5 overflow-auto position-relative">
     <router-outlet />
   </main>
 </div>
